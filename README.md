@@ -117,29 +117,3 @@ instant-check/
 // 响应
 { "success": true }
 ```
-
----
-
-## 本地运行
-
-**前提：** Go 1.24+、Node 18+、MySQL 8
-
-```bash
-# 1. 克隆
-git clone https://github.com/AProgramerWithoutGlasses/---InstantCheck.git
-cd instant-check
-
-# 2. 配置
-cp backend/config.example.yaml backend/config.yaml
-# 编辑 config.yaml，填入 DB 密码和 DeepSeek API Key
-
-# 3. 创建数据库
-mysql -uroot -p -e "CREATE DATABASE instantcheck CHARACTER SET utf8mb4;"
-
-# 4. 启动后端
-cd backend && go run cmd/server/main.go
-
-# 5. 启动前端（另开终端）
-cd frontend && npm install && npm run dev
-# 访问 http://localhost:5173
-```
