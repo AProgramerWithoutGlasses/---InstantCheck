@@ -2,6 +2,7 @@ package main
 
 import (
 	"log"
+	"net/http"
 
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
@@ -31,7 +32,7 @@ func main() {
 	r := gin.Default()
 
 	r.Use(cors.New(cors.Config{
-		AllowOrigins: []string{"http://localhost:5173"},
+		AllowOrigins: []string{"*"},
 		AllowMethods: []string{"GET", "POST"},
 		AllowHeaders: []string{"Content-Type"},
 	}))
@@ -41,6 +42,18 @@ func main() {
 		api.POST("/analyze", analyzeHandler.Handle)
 		api.POST("/quiz-result", quizResultHandler.Handle)
 	}
+
+	// Serve frontend static files
+	r.Static("/assets", "../frontend/dist/assets")
+	r.StaticFile("/favicon.ico", "../frontend/dist/favicon.ico")
+	r.NoRoute(func(c *gin.Context) {
+		c.File("../frontend/dist/index.html")
+	})
+
+	// Health check
+	r.GET("/ping", func(c *gin.Context) {
+		c.JSON(http.StatusOK, gin.H{"status": "ok"})
+	})
 
 	log.Printf("Server starting on :%s", cfg.Server.Port)
 	log.Fatal(r.Run(":" + cfg.Server.Port))
